@@ -1,0 +1,15 @@
+{% extends 'comment/base.html' %}
+{% block content %}
+
+<h4>Edit Comment</h4>
+
+<div class="card p-3">
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-success">Update</button>
+    <a href="{% url 'comments' %}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+
+{% endblock %}

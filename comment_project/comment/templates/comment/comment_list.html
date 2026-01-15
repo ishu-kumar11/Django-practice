@@ -1,0 +1,53 @@
+{% extends 'comment/base.html' %}
+{% block content %}
+
+<h3 class="mb-4">💬 Comment Section</h3>
+
+<div class="card p-3 mb-4">
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="hidden" name="parent_id" id="parent_id">
+    <button class="btn btn-primary">Post Comment</button>
+  </form>
+</div>
+
+{% for comment in comments %}
+<div class="card mb-3 p-3">
+
+  <h5>{{ comment.title }}</h5>
+  <p>{{ comment.body }}</p>
+  <small>
+    By <b>{{ comment.name }}</b> | {{ comment.created_at|date:"d M Y H:i" }}
+  </small>
+
+  <div class="mt-2">
+    <a href="{% url 'edit' comment.id %}" class="btn btn-sm btn-warning">Edit</a>
+    <a href="{% url 'delete' comment.id %}" class="btn btn-sm btn-danger">Delete</a>
+    <button onclick="replyTo('{{ comment.id }}')" class="btn btn-sm btn-secondary">Reply</button>
+  </div>
+
+  <!-- Replies -->
+  {% for reply in comment.replies.all %}
+  <div class="card mt-2 ms-4 p-2 bg-light">
+    <b>{{ reply.title }}</b>
+    <p>{{ reply.body }}</p>
+    <small>
+      — {{ reply.name }} | {{ reply.created_at|date:"d M Y H:i" }}
+    </small>
+  </div>
+  {% endfor %}
+
+</div>
+{% endfor %}
+
+
+
+<script>
+function replyTo(id){
+  document.getElementById("parent_id").value = id;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
+{% endblock %}
