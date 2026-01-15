@@ -1,0 +1,22 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Success page</title>
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+</head>
+<body>
+    <div class="success-box">
+        <h1>Success!</h1>
+
+        <p>
+            Thank you, <strong>{{ name }}</strong>!  
+            Your contact message has been successfully sent.  
+            We will be in touch soon.
+        </p>
+
+        <a href="{% url 'home' %}">Back to home page</a>
+    </div>
+</body>
+</html>

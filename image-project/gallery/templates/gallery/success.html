@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Success</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-5">
+
+<h2 class="text-success">Your image is added ✅</h2>
+
+<p>
+  <a href="{{ photo.image.url }}">Click here to check your image</a>
+  <hr>
+  <a href="/photos/" class="btn btn-info">See all uploaded photos</a>
+
+</p>
+
+<hr>
+
+<h4>Your Image Details</h4>
+
+<p><strong>Name:</strong> {{ photo.name }}</p>
+<p><strong>Created at:</strong> {{ photo.created_at }}</p>
+
+<img src="{{ photo.image.url }}" class="img-fluid mt-3" width="300">
+
+</body>
+</html>
