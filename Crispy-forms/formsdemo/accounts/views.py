@@ -40,6 +40,10 @@ def login_view(request):
 	return render(request, 'accounts/login.html', {'error': error})
 
 
+'''
+logout_view	= Performs logout
+logged_out = Displays logout message
+'''
 
 def logout_view(request):
 	logout(request)
