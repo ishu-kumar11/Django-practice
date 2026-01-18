@@ -7,6 +7,10 @@
 <body>
 
 <nav class="navbar navbar-dark bg-dark">
+  {% if request.user.is_staff %}
+    <a class="btn btn-sm btn-warning" href="/logs/">Audit Logs</a>
+  {% endif %}
+
   <div class="container-fluid">
     <span class="navbar-brand">Audit Log System</span>
   </div>

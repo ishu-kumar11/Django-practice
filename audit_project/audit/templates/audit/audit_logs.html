@@ -3,6 +3,25 @@
 {% block content %}
 <h4>Audit Logs</h4>
 
+<form method="get" class="row g-2 mb-3">
+  <div class="col">
+    <input type="text" name="user" class="form-control" placeholder="User">
+  </div>
+
+  <div class="col">
+    <input type="text" name="action" class="form-control" placeholder="Action">
+  </div>
+
+  <div class="col">
+    <input type="date" name="date" class="form-control">
+  </div>
+
+  <div class="col">
+    <button class="btn btn-primary">Filter</button>
+  </div>
+</form>
+
+
 <table class="table table-bordered table-striped">
     <thead class="table-dark">
         <tr>
@@ -11,6 +30,7 @@
             <th>Model</th>
             <th>Object ID</th>
             <th>Time</th>
+            <th>IP Address</th>   <!-- 👈 added -->
         </tr>
     </thead>
     <tbody>
@@ -21,6 +41,7 @@
             <td>{{ log.model_name }}</td>
             <td>{{ log.object_id }}</td>
             <td>{{ log.timestamp }}</td>
+            <td>{{ log.ip_address|default:"-" }}</td>  <!-- 👈 HERE -->
         </tr>
         {% endfor %}
     </tbody>
