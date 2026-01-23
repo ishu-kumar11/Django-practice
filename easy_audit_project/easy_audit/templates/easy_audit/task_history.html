@@ -1,0 +1,81 @@
+{% extends 'easy_audit/base.html' %}
+
+{% block content %}
+
+<h4 class="mb-3">
+    Audit History – {{ task.title }}
+</h4>
+
+{# 🔴 Deleted warning #}
+{% if is_deleted %}
+<div class="alert alert-danger">
+    ⚠️ This task has been deleted, but its audit history is preserved.
+</div>
+{% endif %}
+
+<table class="table table-bordered table-striped mt-3">
+    <thead class="table-dark">
+        <tr>
+            <th style="width: 20%">Date</th>
+            <th style="width: 15%">User</th>
+            <th style="width: 15%">Action</th>
+            <th>Changes</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        {% for entry in changes %}
+        <tr>
+            <td>
+                {{ entry.date|date:"d M Y, h:i A" }}
+            </td>
+
+            <td>
+                {% if entry.user %}
+                    {{ entry.user }}
+                {% else %}
+                    <span class="text-muted">System</span>
+                {% endif %}
+            </td>
+
+            <td>
+                {% if entry.type == '+' %}
+                    <span class="badge bg-success">Created</span>
+                {% elif entry.type == '~' %}
+                    <span class="badge bg-warning text-dark">Updated</span>
+                {% elif entry.type == '-' %}
+                    <span class="badge bg-danger">Deleted</span>
+                {% endif %}
+            </td>
+
+            <td>
+                {% if entry.fields %}
+                    {% for f in entry.fields %}
+                        <div class="mb-1">
+                            <strong>{{ f.field }}</strong> :
+                            <span class="text-danger">{{ f.old }}</span>
+                            →
+                            <span class="text-success">{{ f.new }}</span>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <span class="text-muted">No field changes</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4" class="text-center text-muted">
+                No audit history available
+            </td>
+        </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+
+<a href="/" class="btn btn-secondary mt-3">
+    ← Back to Task List
+</a>
+
+{% endblock %}
