@@ -1,0 +1,12 @@
+{% extends 'tem_app/base.html' %}
+
+{% block title %}
+My Home
+{% endblock %}
+
+{% block content %}
+<h1>Hello {{ name|upper }}</h1>
+<p>Age: {{ age }}</p>
+<p>Course: {{ course|title }}</p>
+<p>Today: {{ today|date:"d M Y" }}</p>
+{% endblock %}
