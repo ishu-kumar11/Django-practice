@@ -1,0 +1,156 @@
+{% extends "map_app/base.html" %}
+{% block content %}
+
+<div class="row justify-content-center">
+  <div class="col-md-7">
+
+    <div class="card shadow-sm rounded-4 p-4">
+      <h3 class="fw-bold mb-2">✅ Auto Fill Location Form</h3>
+      <p class="text-muted mb-3">
+        Click <b>Allow Location</b> and it will fill Address, State, District, Pincode automatically (FREE).
+      </p>
+
+      {% if form.errors %}
+<div class="alert alert-danger">
+    <b>Form Errors:</b>
+    {{ form.errors }}
+</div>
+{% endif %}
+
+
+      <form method="POST">
+        {% csrf_token %}
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Name</label>
+          {{ form.name }}
+        </div>
+
+        <div class="mb-3">
+  <label class="form-label fw-semibold">Society / House No / Landmark</label>
+  {{ form.society_landmark }}
+</div>
+
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Full Address</label>
+          {{ form.full_address }}
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-semibold">State</label>
+            {{ form.state }}
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-semibold">District</label>
+            {{ form.district }}
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Pincode</label>
+          {{ form.pincode }}
+        </div>
+
+        {{ form.latitude }}
+        {{ form.longitude }}
+
+        <button type="button" id="getLocationBtn" class="btn btn-primary w-100 mb-3">
+          📍 Allow Location & Auto-Fill
+        </button>
+
+        <button type="submit" class="btn btn-success w-100">
+          ✅ Submit
+        </button>
+
+        <div id="statusBox" class="alert mt-3 d-none"></div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+const statusBox = document.getElementById("statusBox");
+
+function showStatus(msg, type="info") {
+  statusBox.className = "alert alert-" + type + " mt-3";
+  statusBox.innerText = msg;
+  statusBox.classList.remove("d-none");
+}
+
+document.getElementById("getLocationBtn").addEventListener("click", function () {
+
+  if (!navigator.geolocation) {
+    showStatus("❌ Your browser does not support Geolocation.", "danger");
+    return;
+  }
+
+  showStatus("📍 Getting your live location... please allow permission ✅", "info");
+
+  navigator.geolocation.getCurrentPosition(async function (position) {
+
+    const lat = position.coords.latitude;
+    const lng = position.coords.longitude;
+
+    // fill hidden inputs
+    let latFixed = Number(lat).toFixed(7);
+    let lngFixed = Number(lng).toFixed(7);
+
+document.getElementById("id_latitude").value = latFixed;
+document.getElementById("id_longitude").value = lngFixed;
+
+
+
+    showStatus("✅ Location found! Now fetching address...", "warning");
+
+    // ✅ OpenStreetMap Nominatim reverse geocoding API (FREE)
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`;
+
+
+    try {
+      const response = await fetch(url, {
+        headers: {
+          "Accept": "application/json"
+        }
+      });
+
+      const data = await response.json();
+
+      if (!data || !data.address) {
+        showStatus("❌ Address not found. Try again.", "danger");
+        return;
+      }
+
+      // Full address
+      document.getElementById("id_full_address").value = data.display_name || "";
+
+      // Extract data
+      const addr = data.address;
+
+      // ✅ State
+      document.getElementById("id_state").value = addr.state || "";
+
+      // ✅ District (sometimes city / county is returned)
+      document.getElementById("id_district").value = addr.county || addr.city || addr.town || addr.village || "";
+
+      // ✅ Pincode
+      document.getElementById("id_pincode").value = addr.postcode || "";
+
+      showStatus("✅ Auto-filled successfully! Now you can submit ✅", "success");
+
+    } catch (error) {
+      showStatus("❌ Error while fetching address: " + error, "danger");
+    }
+
+  }, function (error) {
+    showStatus("❌ Permission denied or location error. Please allow location.", "danger");
+  });
+
+});
+</script>
+{% endblock %}
