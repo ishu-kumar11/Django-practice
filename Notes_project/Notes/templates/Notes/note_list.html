@@ -1,0 +1,18 @@
+<h2>My Notes</h2>
+<a href="{% url 'logout' %}">🚪 Logout</a>
+<hr>
+
+<a href="{% url 'add_note' %}">➕ Add Note</a>
+<hr>
+
+{% for note in notes %}
+    <h3>{{ note.title }}</h3>
+    <p>{{ note.content }}</p>
+    <small>{{ note.created_at }}</small><br>
+
+    <a href="{% url 'edit_note' note.id %}">✏️ Edit</a>
+    <a href="{% url 'delete_note' note.id %}">🗑️ Delete</a>
+    <hr>
+{% empty %}
+    <p>No notes yet 😅</p>
+{% endfor %}
