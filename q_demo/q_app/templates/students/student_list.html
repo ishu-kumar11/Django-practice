@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student List (Q Example)</title>
+</head>
+<body>
+
+<h2>Student List</h2>
+
+<form method="GET">
+    <input type="text" name="q" placeholder="Search name or city..." />
+    <button type="submit">Search</button>
+</form>
+
+<hr>
+
+<ul>
+    {% for student in students %}
+        <li>{{ student.name }} - {{ student.city }}</li>
+    {% empty %}
+        <li>No students found</li>
+    {% endfor %}
+</ul>
+
+</body>
+</html>
